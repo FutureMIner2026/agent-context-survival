@@ -38,6 +38,22 @@ Because "use less context" is not advice, and "1M tokens" is not a budget.
 We publish the measurements so you can compute **your** death line instead of
 guessing, and check whether your folding is silently failing.
 
+## Tools
+
+### `tools/diagnose.py` — how close is this conversation to dying?
+
+```bash
+python tools/diagnose.py my_session.jsonl.zstd
+python tools/diagnose.py ./sessions/          # rank every session by risk
+```
+
+It decompresses the session, counts only the text that would actually be sent
+back (skipping streaming replay), converts to tokens, and tells you where you
+stand against the 792,576 messages budget — plus the `1.9x + 15,000` figure to
+use for a session that has never been folded.
+
+Standard library only; `pip install zstandard` if your sessions are `.zstd`.
+
 ## What's here
 
 - `docs/death-formula.md` — the full measurement: samples, method, formula, caveats
