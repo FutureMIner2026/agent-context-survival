@@ -2,6 +2,35 @@
 
 > All numbers below are measured from real traffic, not estimated from docs.
 
+## 0. The scale of the evidence
+
+Nothing here is a single observation dressed up as a law. This is what the
+numbers rest on, and where each sample came from:
+
+| What | Sample size | How it was collected |
+|---|---|---|
+| Refusals that expose the window and the reserve | **6** | production incidents, error text quoted verbatim |
+| Fail-fast rejections that expose the messages budget | **3** | proxy-generated `502`, payload never forwarded |
+| Paired (bytes sent -> tokens billed) requests | **3,126** | proxy usage log, one pair per request |
+| Folding passes classified by reclaim ratio | **108** | proxy fold ledger, across every session we ran |
+| Sessions measured for per-turn growth | **6** | contiguous `input` deltas in the usage log |
+| Sessions run through the survival calculation | **7** | every session in the library with a real token reading |
+| Bodies rebuilt end-to-end (transplant) | **4** | deliberate, each verified with a ten-gate check |
+| Crash targets cloned on purpose to reproduce the failure | **2** | deliberate, then frozen |
+
+Two honest qualifications, because they affect how you should read this:
+
+1. **The refusals are not a controlled experiment.** They are accidents we read
+   afterwards. What makes them usable is that all six agree on the same two
+   constants — that agreement is the evidence, not the sample count.
+2. **The deliberate experiments are ours alone.** Two crash clones, four
+   transplants, twenty-six rollback backups. Small numbers, but every one of
+   them was run to answer a specific question, and every claim in this document
+   that says "we tested" points at one of them.
+
+What we did *not* do: change one variable at a time under a fixed everything
+else. This is field data from a real system, and it is presented that way.
+
 ## 1. What actually kills a conversation
 
 Three separate limits exist, and people routinely confuse them:
@@ -23,6 +52,9 @@ Note the structure: `requested = messages + 256000`. The reserve is constant, so
 the only variable you control is the messages budget.
 
 ## 2. Samples
+
+Six refusals, captured as the API returned them. The columns are what the error
+text contained, not a reconstruction:
 
 | Session | Requested tokens | Ratio to window | Outcome |
 |---|---|---|---|
