@@ -31,6 +31,28 @@ graceful degradation and no partial answer. **It is a cliff, not a slope.**
 | Folding reclaim per pass | 9.9% / 12.7% / 24.7% | [108 fold passes](docs/death-formula.md#4-the-part-nobody-warns-you-about-folding) |
 | Growth per turn | ~800–1,400 tokens | [6 sessions](docs/how-we-measured.md#0-the-scale-of-the-evidence) |
 
+## One caveat before you use the 792,576 number
+
+**792,576 is the budget of the deployment we measured** — the window minus the
+completion reserve, then whatever policy the proxy applies on top. It is *not* a
+universal constant: within this same setup we have also seen a session whose
+budget was **1,000,000**.
+
+So the formula is portable, the number is not:
+
+```
+death line (bytes) = your_budget * your_bytes_per_token
+```
+
+Your proxy already prints the budget. Look for a line like:
+
+```
+usage=40% (315973/792576)
+```
+
+That single line gives you the numerator, the denominator, and the percentage —
+no estimation needed.
+
 ## The consequence
 
 ```
