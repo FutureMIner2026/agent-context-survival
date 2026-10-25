@@ -51,6 +51,20 @@ However, you requested 2636049 tokens (2380049 in the messages, 256000 in the co
 Note the structure: `requested = messages + 256000`. The reserve is constant, so
 the only variable you control is the messages budget.
 
+### A caveat on the 792,576 number
+
+This is the budget of **the deployment we measured**, not a universal constant.
+Within the same setup we have also observed a session with a budget of
+**1,000,000** (`usage=40% (404238/1000000)`).
+
+The formula still holds:
+
+    budget = window - completion_reserve        (policy is applied on top)
+    death_line_bytes = budget * bytes_per_token
+
+but **the budget must be read per session, not assumed**. Most proxies print it
+directly, e.g. `usage=40% (315973/792576)`.
+
 ## 2. Samples
 
 Six refusals, captured as the API returned them. The columns are what the error
